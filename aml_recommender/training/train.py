@@ -33,7 +33,7 @@ from surprise.model_selection import train_test_split
 def split_data(df):
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(df[['userID', 'itemID', 'rating']], reader)
-    trainset, testset = train_test_split(data, test_size=.25)
+    trainset, testset = train_test_split(data, test_size=.25, random_state=0)
     data = {"train": trainset, "test": testset}
     return data
 
