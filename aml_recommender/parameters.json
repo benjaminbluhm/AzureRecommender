@@ -1,0 +1,18 @@
+{
+    "training":
+    {
+        "n_epochs": 20
+    },
+    "evaluation":
+    {
+
+    },
+    "registration":
+    {
+        "tags": ["rmse"]
+    },
+    "scoring":
+    {
+        
+    }
+}
