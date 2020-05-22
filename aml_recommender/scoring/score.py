@@ -31,6 +31,7 @@ from inference_schema.schema_decorators \
     import input_schema, output_schema
 from inference_schema.parameter_types.numpy_parameter_type \
     import NumpyParameterType
+from surprise import dump
 
 
 def init():
@@ -44,15 +45,19 @@ def init():
     model_path = Model.get_model_path(
         os.getenv("AZUREML_MODEL_DIR").split('/')[-2])
 
-    model = joblib.load(model_path)
+    #model = joblib.load(model_path)
+    model = dump.load(model_path)
+    model = model[1]
 
 
-input_sample = numpy.array([
-    [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-    [10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0]])
-output_sample = numpy.array([
-    5021.509689995557,
-    3693.645386402646])
+# input_sample = numpy.array([
+#     [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+#     [10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0]])
+# output_sample = numpy.array([
+#     5021.509689995557,
+#     3693.645386402646])
+input_sample = numpy.array([2, 45, 3])
+output_sample = numpy.array([3.])
 
 
 # Inference_schema generates a schema for your web service
@@ -61,7 +66,9 @@ output_sample = numpy.array([
 @input_schema('data', NumpyParameterType(input_sample))
 @output_schema(NumpyParameterType(output_sample))
 def run(data, request_headers):
-    result = model.predict(data)
+    # result = model.predict(data)
+    result = model.predict(str(data[0]), str(data[1]), r_ui=str(data[2]), verbose=True)
+    result = numpy.array([result[3]])
 
     # Demonstrate how we can log custom data into the Application Insights
     # traces collection.
@@ -85,6 +92,7 @@ def run(data, request_headers):
 if __name__ == "__main__":
     # Test scoring
     init()
-    test_row = '{"data":[[1,2,3,4,5,6,7,8,9,10],[10,9,8,7,6,5,4,3,2,1]]}'
+    # test_row = '{"data":[[1,2,3,4,5,6,7,8,9,10],[10,9,8,7,6,5,4,3,2,1]]}'
+    test_row = '{"data":[2,45,3]}'
     prediction = run(test_row, {})
     print("Test result: ", prediction)
