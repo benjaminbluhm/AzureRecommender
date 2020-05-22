@@ -30,7 +30,7 @@ import argparse
 import joblib
 import json
 from train import split_data, train_model, get_model_metrics
-from surprise improt dump
+from surprise import dump
 
 
 def register_dataset(
