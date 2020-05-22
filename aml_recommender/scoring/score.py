@@ -24,7 +24,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THE SOFTWARE CODE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 import numpy
-import joblib
 import os
 from azureml.core.model import Model
 from inference_schema.schema_decorators \
@@ -45,7 +44,7 @@ def init():
     model_path = Model.get_model_path(
         os.getenv("AZUREML_MODEL_DIR").split('/')[-2])
 
-    #model = joblib.load(model_path)
+    # model = joblib.load(model_path)
     model = dump.load(model_path)
     model = model[1]
 
@@ -67,7 +66,8 @@ output_sample = numpy.array([3.])
 @output_schema(NumpyParameterType(output_sample))
 def run(data, request_headers):
     # result = model.predict(data)
-    result = model.predict(str(data[0]), str(data[1]), r_ui=str(data[2]), verbose=True)
+    result = model.predict(str(data[0]), str(data[1]),
+                           r_ui=str(data[2]), verbose=True)
     result = numpy.array([result[3]])
 
     # Demonstrate how we can log custom data into the Application Insights
